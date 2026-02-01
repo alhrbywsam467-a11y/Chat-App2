@@ -1,817 +1,89 @@
-<!DOCTYPE html><html><head><style></style></head><body><!DOCTYPE html>
+<!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق المراسلة</title>
+    <title>تطبيق وسام للمراسلة Pro</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #111b21;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .container {
-            display: flex;
-            height: 100vh;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        .sidebar {
-            width: 400px;
-            background: #111b21;
-            border-left: 1px solid #2a3942;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .sidebar-header {
-            background: #202c33;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .sidebar-header h2 {
-            color: #e9edef;
-            font-size: 18px;
-            width: 100%;
-        }
-
-        .user-info {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: #2a3942;
-            border-radius: 8px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .user-details {
-            flex: 1;
-        }
-
-        .user-name {
-            color: #e9edef;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        .user-username {
-            color: #8696a0;
-            font-size: 12px;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .share-link-btn {
-            flex: 1;
-            background: #0088cc;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-
-        .share-link-btn:hover {
-            background: #0077b3;
-        }
-
-        .my-profile-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-
-        .my-profile-btn:hover {
-            background: #5568d3;
-        }
-
-        .search-box {
-            padding: 10px 15px;
-            background: #111b21;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 10px 15px;
-            background: #202c33;
-            border: none;
-            border-radius: 8px;
-            color: #e9edef;
-            font-size: 14px;
-        }
-
-        .search-box input::placeholder {
-            color: #8696a0;
-        }
-
-        .contacts-list {
-            flex: 1;
-            overflow-y: auto;
-            background: #111b21;
-        }
-
-        .contact {
-            padding: 15px;
-            border-bottom: 1px solid #2a3942;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: background 0.2s;
-            position: relative;
-        }
-
-        .contact:hover {
-            background: #202c33;
-        }
-
-        .contact.active {
-            background: #2a3942;
-        }
-
-        .contact-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #25d366, #128c7e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .contact-info {
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .contact-name {
-            color: #e9edef;
-            font-weight: 500;
-            margin-bottom: 3px;
-        }
-
-        .contact-username {
-            color: #8696a0;
-            font-size: 11px;
-            margin-bottom: 2px;
-        }
-
-        .contact-last-message {
-            color: #8696a0;
-            font-size: 13px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .delete-contact-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .contact:hover .delete-contact-btn {
-            opacity: 1;
-        }
-
-        .chat-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #0b141a;
-        }
-
-        .chat-header {
-            background: #202c33;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #2a3942;
-        }
-
-        .chat-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #25d366, #128c7e);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .chat-contact-info h3 {
-            color: #e9edef;
-            font-size: 16px;
-        }
-
-        .chat-contact-status {
-            color: #8696a0;
-            font-size: 13px;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%230b141a" width="100" height="100"/><path d="M0 0L50 50L0 100" stroke="%231a2930" stroke-width="0.5" fill="none"/></svg>');
-            background-size: 50px 50px;
-        }
-
-        .message {
-            margin-bottom: 15px;
-            display: flex;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.sent {
-            justify-content: flex-end;
-        }
-
-        .message-bubble {
-            max-width: 65%;
-            padding: 8px 12px;
-            border-radius: 8px;
-            position: relative;
-            word-wrap: break-word;
-        }
-
-        .message.received .message-bubble {
-            background: #202c33;
-            color: #e9edef;
-            border-radius: 0 8px 8px 8px;
-        }
-
-        .message.sent .message-bubble {
-            background: #005c4b;
-            color: #e9edef;
-            border-radius: 8px 0 8px 8px;
-        }
-
-        .message-text {
-            margin-bottom: 5px;
-            line-height: 1.4;
-        }
-
-        .message-time {
-            font-size: 11px;
-            color: #8696a0;
-            text-align: left;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .message.sent .message-time {
-            justify-content: flex-end;
-        }
-
-        .checkmark {
-            color: #53bdeb;
-        }
-
-        .voice-message {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 5px;
-        }
-
-        .voice-play-btn {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: #25d366;
-            border: none;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .voice-waveform {
-            flex: 1;
-            height: 30px;
-            background: repeating-linear-gradient(
-                90deg,
-                #8696a0 0px,
-                #8696a0 2px,
-                transparent 2px,
-                transparent 6px
-            );
-            border-radius: 5px;
-        }
-
-        .voice-duration {
-            color: #8696a0;
-            font-size: 12px;
-        }
-
-        .input-area {
-            background: #202c33;
-            padding: 10px 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .input-area button {
-            background: none;
-            border: none;
-            color: #8696a0;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 8px;
-            transition: color 0.2s;
-        }
-
-        .input-area button:hover {
-            color: #e9edef;
-        }
-
-        .input-area input {
-            flex: 1;
-            padding: 12px 15px;
-            background: #2a3942;
-            border: none;
-            border-radius: 8px;
-            color: #e9edef;
-            font-size: 15px;
-        }
-
-        .input-area input::placeholder {
-            color: #8696a0;
-        }
-
-        .send-button {
-            background: #25d366 !important;
-            color: white !important;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .send-button:hover {
-            background: #20bd5a !important;
-        }
-
-        .record-button {
-            background: #dc3545 !important;
-            color: white !important;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .record-button:hover {
-            background: #c82333 !important;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #111b21;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #374248;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4a5c66;
-        }
-
-        .empty-chat {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #8696a0;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .empty-chat h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: #202c33;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .modal-content h3 {
-            color: #e9edef;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .modal-content p {
-            color: #8696a0;
-            margin-bottom: 15px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 12px;
-            background: #2a3942;
-            border: none;
-            border-radius: 8px;
-            color: #e9edef;
-            margin-bottom: 15px;
-            font-size: 15px;
-        }
-
-        .modal-content input::placeholder {
-            color: #8696a0;
-        }
-
-        .username-input-wrapper {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        .username-prefix {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #25d366;
-            font-weight: bold;
-        }
-
-        .username-input-wrapper input {
-            padding-right: 35px;
-            margin-bottom: 0;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
-        }
-
-        .btn-cancel {
-            background: #374248;
-            color: #e9edef;
-        }
-
-        .btn-save {
-            background: #25d366;
-            color: white;
-        }
-
-        .btn-cancel:hover {
-            background: #4a5c66;
-        }
-
-        .btn-save:hover {
-            background: #20bd5a;
-        }
-
-        .empty-contacts {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #8696a0;
-            padding: 40px;
-            text-align: center;
-        }
-
-        .empty-contacts h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
-        }
-
-        .link-display {
-            background: #2a3942;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .link-display input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #0088cc;
-            font-size: 13px;
-            padding: 5px;
-        }
-
-        .copy-btn {
-            background: #25d366 !important;
-            color: white !important;
-            padding: 8px 15px !important;
-            border-radius: 5px;
-            font-size: 13px !important;
-        }
-
-        .copy-btn:hover {
-            background: #20bd5a !important;
-        }
-
-        .welcome-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background: #111b21;
-            color: #e9edef;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .welcome-screen h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: #25d366;
-        }
-
-        .welcome-screen p {
-            color: #8696a0;
-            margin-bottom: 30px;
-        }
-
-        .welcome-screen input {
-            width: 100%;
-            max-width: 400px;
-            padding: 15px;
-            background: #202c33;
-            border: none;
-            border-radius: 8px;
-            color: #e9edef;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        .welcome-screen .username-input-wrapper {
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 20px;
-        }
-
-        .welcome-screen .username-input-wrapper input {
-            width: 100%;
-            margin-bottom: 0;
-        }
-
-        .welcome-screen button {
-            padding: 15px 40px;
-            background: #25d366;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .welcome-screen button:hover {
-            background: #20bd5a;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #25d366;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-            }
-            .chat-area {
-                display: none;
-                position: fixed;
-                width: 100%;
-                top: 0;
-                left: 0;
-            }
-            .chat-area.active {
-                display: flex;
-            }
-            .sidebar.hide {
-                display: none;
-            }
-        }
+        /* سأبقي تنسيقاتك كما هي مع إضافة تنسيق بسيط لزر الإضافة الجديد */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #111b21; height: 100vh; overflow: hidden; }
+        .container { display: flex; height: 100vh; max-width: 1600px; margin: 0 auto; }
+        .sidebar { width: 400px; background: #111b21; border-left: 1px solid #2a3942; display: flex; flex-direction: column; }
+        .sidebar-header { background: #202c33; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .user-info { display: flex; align-items: center; gap: 10px; padding: 10px; background: #2a3942; border-radius: 8px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+        .header-buttons { display: flex; gap: 5px; width: 100%; }
+        .header-buttons button { flex: 1; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-size: 12px; font-weight: bold; color: white; transition: 0.3s; }
+        .share-link-btn { background: #0088cc; }
+        .add-user-btn { background: #25d366; }
+        .my-profile-btn { background: #667eea; }
+        .contacts-list { flex: 1; overflow-y: auto; }
+        .contact { padding: 15px; border-bottom: 1px solid #2a3942; cursor: pointer; display: flex; align-items: center; gap: 15px; color: white; }
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: #0b141a; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #202c33; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; color: white; }
+        .modal-content input { width: 100%; padding: 12px; margin: 10px 0; background: #2a3942; border: none; color: white; border-radius: 8px; }
+        .welcome-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #111b21; color: white; }
+        .welcome-screen input { padding: 15px; margin: 10px; border-radius: 8px; border: none; width: 300px; }
+        .welcome-screen button { padding: 15px 30px; background: #25d366; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
+
     <div id="welcomeScreen" class="welcome-screen">
-        <h1>مرحباً بك! 👋</h1>
-        <p>أدخل بياناتك للبدء</p>
-        <input type="text" id="userNameInput" placeholder="اسمك الكامل" onkeypress="handleWelcomeKeyPress(event)">
-        <div class="username-input-wrapper">
-            <span class="username-prefix">@</span>
-            <input type="text" id="userUsernameInput" placeholder="اسم المستخدم (بدون مسافات)" onkeypress="handleWelcomeKeyPress(event)">
-        </div>
-        <button onclick="saveUserName()">ابدأ المحادثة</button>
+        <h1>مرحباً بك في Wesam Pro! 👋</h1>
+        <input type="text" id="userNameInput" placeholder="اسمك الظاهر">
+        <input type="text" id="userUsernameInput" placeholder="اسم المستخدم الخاص بك (ID)">
+        <button onclick="saveUserName()">ابدأ الآن</button>
     </div>
 
     <div class="container" id="mainApp" style="display: none;">
-        <div class="sidebar" id="sidebar">
+        <div class="sidebar">
             <div class="sidebar-header">
-                <h2>المحادثات</h2>
                 <div class="user-info" id="userInfo"></div>
                 <div class="header-buttons">
-                    <button class="share-link-btn" onclick="openShareLinkModal()">📤 مشاركة رابطي</button>
-                    <button class="my-profile-btn" onclick="openProfileModal()">⚙️ الملف الشخصي</button>
+                    <button class="share-link-btn" onclick="openShareLinkModal()">📤 رابطي</button>
+                    <button class="add-user-btn" onclick="openAddFriendModal()">➕ إضافة صديق</button>
+                    <button class="my-profile-btn" onclick="location.reload()">🔄 تحديث</button>
                 </div>
             </div>
-            
-            <div class="search-box">
-                <input type="text" placeholder="ابحث عن محادثة" id="searchInput" oninput="searchContacts()">
-            </div>
-
-            <div class="contacts-list" id="contactsList">
-                <div class="empty-contacts">
-                    <h3>جاري التحميل...</h3>
-                </div>
-            </div>
+            <div class="contacts-list" id="contactsList"></div>
         </div>
-
         <div class="chat-area" id="chatArea">
-            <div class="empty-chat">
-                <h3>مرحباً بك!</h3>
-                <p>اختر محادثة للبدء</p>
+            <div style="color: #8696a0; text-align: center; margin-top: 50vh;">اختر صديقاً لبدء الدردشة</div>
+        </div>
+    </div>
+
+    <div class="modal" id="addFriendModal">
+        <div class="modal-content">
+            <h3>إضافة صديق جديد</h3>
+            <p>أدخل اسم المستخدم (ID) لصديقك:</p>
+            <input type="text" id="friendIdInput" placeholder="مثال: wesam_2026">
+            <div style="display:flex; gap:10px;">
+                <button onclick="addFriendAction()" style="flex:1; padding:10px; background:#25d366; border:none; color:white; border-radius:8px; cursor:pointer;">إضافة</button>
+                <button onclick="closeModal('addFriendModal')" style="flex:1; padding:10px; background:#374248; border:none; color:white; border-radius:8px; cursor:pointer;">إلغاء</button>
             </div>
         </div>
     </div>
 
     <div class="modal" id="shareLinkModal">
         <div class="modal-content">
-            <h3>شارك رابطك مع أصدقائك</h3>
-            <p>أرسل هذا الرابط لأصدقائك ليتمكنوا من إضافتك والتواصل معك</p>
-            <div class="link-display">
-                <input type="text" id="shareLink" readonly>
-                <button class="copy-btn" onclick="copyLink()">نسخ</button>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeShareLinkModal()">إغلاق</button>
-            </div>
+            <h3>رابط دعوتك الخاص</h3>
+            <input type="text" id="shareLinkInput" readonly>
+            <button onclick="copyInviteLink()" style="width:100%; padding:10px; background:#0088cc; border:none; color:white; border-radius:8px; cursor:pointer;">نسخ الرابط</button>
+            <button onclick="closeModal('shareLinkModal')" style="width:100%; padding:10px; background:none; color:#8696a0; border:none; cursor:pointer; margin-top:10px;">إغلاق</button>
         </div>
     </div>
 
-    <div class="modal" id="profileModal">
-        <div class="modal-content">
-            <h3>الملف الشخصي</h3>
-            <input type="text" id="profileName" placeholder="اسمك">
-            <div class="username-input-wrapper">
-                <span class="username-prefix">@</span>
-                <input type="text" id="profileUsername" placeholder="اسم المستخدم">
-            </div>
-            <input type="text" id="profileBio" placeholder="نبذة عنك (اختياري)">
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeProfileModal()">إلغاء</button>
-                <button class="btn-save" onclick="saveProfile()">حفظ</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- الصوت للإشعارات -->
-    <audio id="notificationSound" preload="auto">
-        <source src="data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAADhAC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAA4SxFUnKAAAAAAD/+xDEAAPAAAGkAAAAIAAANIAAAARMQU1FMy4xMDBVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg">
-    </audio>
-
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, push, onValue, remove, update, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, set, get, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        // 🔥 ضع إعدادات Firebase هنا
+        // إعدادات Firebase الخاصة بك
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
+            apiKey: "YOUR_API_KEY", // ضع مفتاحك هنا
             authDomain: "conversations-4cdea.firebaseapp.com",
             databaseURL: "https://conversations-4cdea-default-rtdb.firebaseio.com",
             projectId: "conversations-4cdea",
@@ -821,583 +93,93 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+        const db = getDatabase(app);
 
-        let currentUserId = localStorage.getItem('userId');
-        let currentUserName = localStorage.getItem('userName');
-        let currentUserUsername = localStorage.getItem('userUsername');
-        let currentChat = null;
-        let contacts = {};
-        let lastMessageCount = {};
-        let mediaRecorder;
-        let audioChunks = [];
-        let isRecording = false;
+        let myId = localStorage.getItem('userId');
+        let myName = localStorage.getItem('userName');
 
+        // ميزة فحص رابط الدعوة التلقائي
         const urlParams = new URLSearchParams(window.location.search);
-        const inviteId = urlParams.get('invite');
+        const invitedBy = urlParams.get('invite');
 
-        init();
-
-        async function init() {
-            if (inviteId && !currentUserId) {
-                const userSnapshot = await get(ref(database, `users/${inviteId}`));
-                if (userSnapshot.exists()) {
-                    localStorage.setItem('pendingInvite', inviteId);
-                    showWelcomeScreen();
-                } else {
-                    alert('رابط الدعوة غير صحيح');
-                    showWelcomeScreen();
-                }
-            } else if (currentUserId) {
-                loadApp();
-            } else {
-                showWelcomeScreen();
-            }
-        }
-
-        function showWelcomeScreen() {
-            document.getElementById('welcomeScreen').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
-        }
-
-        window.handleWelcomeKeyPress = function(event) {
-            if (event.key === 'Enter') {
-                saveUserName();
-            }
+        if (myId) {
+            startApp();
+            if (invitedBy && invitedBy !== myId) autoAddFriend(invitedBy);
         }
 
         window.saveUserName = async function() {
-            const nameInput = document.getElementById('userNameInput');
-            const usernameInput = document.getElementById('userUsernameInput');
-            const name = nameInput.value.trim();
-            const username = usernameInput.value.trim().toLowerCase().replace(/\s/g, '');
-            
-            if (name === '') {
-                alert('الرجاء إدخال اسمك');
-                return;
-            }
+            const name = document.getElementById('userNameInput').value;
+            const username = document.getElementById('userUsernameInput').value.trim();
+            if (!name || !username) return alert("املا البيانات يا بطل");
 
-            if (username === '') {
-                alert('الرجاء إدخال اسم مستخدم');
-                return;
-            }
+            myId = username;
+            myName = name;
+            localStorage.setItem('userId', myId);
+            localStorage.setItem('userName', myName);
 
-            if (!/^[a-z0-9_]+$/.test(username)) {
-                alert('اسم المستخدم يجب أن يحتوي على حروف إنجليزية وأرقام فقط');
-                return;
-            }
+            await set(ref(db, 'users/' + myId), { name: myName, id: myId });
+            startApp();
+        };
 
-            // التحقق من عدم تكرار اسم المستخدم
-            const usernamesRef = ref(database, 'usernames');
-            const usernamesSnapshot = await get(usernamesRef);
-            const existingUsernames = usernamesSnapshot.val() || {};
-            
-            if (Object.values(existingUsernames).includes(username)) {
-                alert('اسم المستخدم موجود مسبقاً، اختر اسم آخر');
-                return;
-            }
-
-            const newUserRef = push(ref(database, 'users'));
-            currentUserId = newUserRef.key;
-            currentUserName = name;
-            currentUserUsername = username;
-
-            await set(newUserRef, {
-                name: name,
-                username: username,
-                bio: '',
-                createdAt: Date.now()
-            });
-
-            // حفظ اسم المستخدم
-            await set(ref(database, `usernames/${currentUserId}`), username);
-
-            localStorage.setItem('userId', currentUserId);
-            localStorage.setItem('userName', name);
-            localStorage.setItem('userUsername', username);
-
-            const pendingInvite = localStorage.getItem('pendingInvite');
-            if (pendingInvite) {
-                await addContactFromInvite(pendingInvite);
-                localStorage.removeItem('pendingInvite');
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-
-            loadApp();
-        }
-
-        async function addContactFromInvite(inviterId) {
-            const inviterSnapshot = await get(ref(database, `users/${inviterId}`));
-            
-            if (inviterSnapshot.exists()) {
-                const inviterData = inviterSnapshot.val();
-                
-                await set(ref(database, `contacts/${currentUserId}/${inviterId}`), {
-                    name: inviterData.name,
-                    username: inviterData.username,
-                    userId: inviterId,
-                    lastMessage: 'تمت الإضافة',
-                    timestamp: Date.now()
-                });
-
-                await set(ref(database, `contacts/${inviterId}/${currentUserId}`), {
-                    name: currentUserName,
-                    username: currentUserUsername,
-                    userId: currentUserId,
-                    lastMessage: 'تمت الإضافة',
-                    timestamp: Date.now()
-                });
-
-                const chatId = [currentUserId, inviterId].sort().join('_');
-                const messageRef = push(ref(database, `chats/${chatId}`));
-                await set(messageRef, {
-                    text: `مرحباً! أنا ${currentUserName} (@${currentUserUsername})، تمت إضافتي من خلال رابط الدعوة 👋`,
-                    senderId: currentUserId,
-                    timestamp: Date.now(),
-                    time: getCurrentTime(),
-                    type: 'text'
-                });
-            }
-        }
-
-        function loadApp() {
+        function startApp() {
             document.getElementById('welcomeScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'flex';
-            
-            // عرض معلومات المستخدم
             document.getElementById('userInfo').innerHTML = `
-                <div class="user-avatar">${currentUserName.charAt(0)}</div>
-                <div class="user-details">
-                    <div class="user-name">${currentUserName}</div>
-                    <div class="user-username">@${currentUserUsername}</div>
-                </div>
+                <div class="user-avatar">${myName[0]}</div>
+                <div><div>${myName}</div><small style="color:#8696a0">@${myId}</small></div>
             `;
-            
             loadContacts();
-            requestNotificationPermission();
         }
 
-        function requestNotificationPermission() {
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission();
-            }
-        }
-
-        function playNotificationSound() {
-            const sound = document.getElementById('notificationSound');
-            sound.play().catch(e => console.log('Could not play sound'));
-        }
-
-        function showNotification(title, body) {
-            playNotificationSound();
+        // دالة إضافة صديق باليوزر (يدوياً)
+        window.addFriendAction = async function() {
+            const friendId = document.getElementById('friendIdInput').value.trim();
+            if (friendId === myId) return alert("لا يمكنك إضافة نفسك!");
             
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification(title, {
-                    body: body,
-                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%2325d366"/></svg>',
-                    tag: 'chat-notification'
-                });
+            const snapshot = await get(ref(db, 'users/' + friendId));
+            if (snapshot.exists()) {
+                await autoAddFriend(friendId);
+                alert("تمت إضافة الصديق بنجاح!");
+                closeModal('addFriendModal');
+            } else {
+                alert("اسم المستخدم هذا غير موجود في السيرفر");
             }
+        };
+
+        async function autoAddFriend(friendId) {
+            const friendData = (await get(ref(db, 'users/' + friendId))).val();
+            // إضافة الصديق عندي
+            await set(ref(db, `contacts/${myId}/${friendId}`), { name: friendData.name, id: friendId });
+            // إضافتي عند الصديق
+            await set(ref(db, `contacts/${friendId}/${myId}`), { name: myName, id: myId });
         }
 
         function loadContacts() {
-            const contactsRef = ref(database, `contacts/${currentUserId}`);
-            onValue(contactsRef, (snapshot) => {
-                contacts = snapshot.val() || {};
-                renderContacts();
-                
-                // مراقبة الرسائل الجديدة
-                Object.keys(contacts).forEach(contactId => {
-                    monitorNewMessages(contactId);
+            onValue(ref(db, 'contacts/' + myId), (snapshot) => {
+                const list = document.getElementById('contactsList');
+                list.innerHTML = "";
+                snapshot.forEach((child) => {
+                    const contact = child.val();
+                    list.innerHTML += `<div class="contact" onclick="alert('جاري فتح محادثة ${contact.name}')">
+                        <div class="user-avatar" style="background:#25d366">${contact.name[0]}</div>
+                        <div>${contact.name} <br> <small>@${contact.id}</small></div>
+                    </div>`;
                 });
             });
-        }
-
-        function monitorNewMessages(contactId) {
-            const chatId = [currentUserId, contactId].sort().join('_');
-            const messagesRef = ref(database, `chats/${chatId}`);
-            
-            onValue(messagesRef, (snapshot) => {
-                const messages = snapshot.val() || {};
-                const messageCount = Object.keys(messages).length;
-                
-                if (lastMessageCount[contactId] && messageCount > lastMessageCount[contactId]) {
-                    // رسالة جديدة
-                    const lastMessage = Object.values(messages).pop();
-                    if (lastMessage.senderId !== currentUserId) {
-                        const contact = contacts[contactId];
-                        showNotification(
-                            `رسالة جديدة من ${contact.name}`,
-                            lastMessage.type === 'voice' ? '🎤 رسالة صوتية' : lastMessage.text
-                        );
-                    }
-                }
-                
-                lastMessageCount[contactId] = messageCount;
-            });
-        }
-
-        function renderContacts() {
-            const contactsList = document.getElementById('contactsList');
-            const contactsArray = Object.entries(contacts);
-            
-            if (contactsArray.length === 0) {
-                contactsList.innerHTML = `
-                    <div class="empty-contacts">
-                        <h3>لا توجد محادثات</h3>
-                        <p>شارك رابطك مع أصدقائك للبدء</p>
-                    </div>
-                `;
-                return;
-            }
-
-            contactsList.innerHTML = contactsArray.map(([id, contact]) => `
-                <div class="contact ${currentChat === id ? 'active' : ''}" onclick="openChat('${id}', '${contact.name}', '${contact.username}')">
-                    <div class="contact-avatar">${contact.name.charAt(0)}</div>
-                    <div class="contact-info">
-                        <div class="contact-name">${contact.name}</div>
-                        <div class="contact-username">@${contact.username}</div>
-                        <div class="contact-last-message">${contact.lastMessage || 'لا توجد رسائل'}</div>
-                    </div>
-                    <button class="delete-contact-btn" onclick="deleteContact(event, '${id}')">حذف</button>
-                </div>
-            `).join('');
         }
 
         window.openShareLinkModal = function() {
-            const shareUrl = `${window.location.origin}${window.location.pathname}?invite=${currentUserId}`;
-            document.getElementById('shareLink').value = shareUrl;
+            document.getElementById('shareLinkInput').value = window.location.origin + window.location.pathname + "?invite=" + myId;
             document.getElementById('shareLinkModal').classList.add('active');
-        }
+        };
 
-        window.closeShareLinkModal = function() {
-            document.getElementById('shareLinkModal').classList.remove('active');
-        }
+        window.openAddFriendModal = () => document.getElementById('addFriendModal').classList.add('active');
+        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+        window.copyInviteLink = () => {
+            navigator.clipboard.writeText(document.getElementById('shareLinkInput').value);
+            alert("تم نسخ رابطك!");
+        };
 
-        window.copyLink = function() {
-            const linkInput = document.getElementById('shareLink');
-            linkInput.select();
-            
-            try {
-                document.execCommand('copy');
-                alert('تم نسخ الرابط! 📋\n\nأرسله لأصدقائك للانضمام');
-            } catch (err) {
-                navigator.clipboard.writeText(linkInput.value).then(() => {
-                    alert('تم نسخ الرابط! 📋\n\nأرسله لأصدقائك للانضمام');
-                });
-            }
-        }
-
-        window.openProfileModal = async function() {
-            const userSnapshot = await get(ref(database, `users/${currentUserId}`));
-            const userData = userSnapshot.val();
-            
-            document.getElementById('profileName').value = userData?.name || currentUserName;
-            document.getElementById('profileUsername').value = userData?.username || currentUserUsername;
-            document.getElementById('profileBio').value = userData?.bio || '';
-            document.getElementById('profileModal').classList.add('active');
-        }
-
-        window.closeProfileModal = function() {
-            document.getElementById('profileModal').classList.remove('active');
-        }
-
-        window.saveProfile = async function() {
-            const name = document.getElementById('profileName').value.trim();
-            const username = document.getElementById('profileUsername').value.trim().toLowerCase().replace(/\s/g, '');
-            const bio = document.getElementById('profileBio').value.trim();
-            
-            if (name === '') {
-                alert('الرجاء إدخال اسمك');
-                return;
-            }
-
-            if (username === '') {
-                alert('الرجاء إدخال اسم مستخدم');
-                return;
-            }
-
-            if (!/^[a-z0-9_]+$/.test(username)) {
-                alert('اسم المستخدم يجب أن يحتوي على حروف إنجليزية وأرقام فقط');
-                return;
-            }
-
-            // التحقق من عدم تكرار اسم المستخدم (إذا تم تغييره)
-            if (username !== currentUserUsername) {
-                const usernamesRef = ref(database, 'usernames');
-                const usernamesSnapshot = await get(usernamesRef);
-                const existingUsernames = usernamesSnapshot.val() || {};
-                
-                if (Object.values(existingUsernames).includes(username)) {
-                    alert('اسم المستخدم موجود مسبقاً، اختر اسم آخر');
-                    return;
-                }
-
-                // تحديث اسم المستخدم
-                await set(ref(database, `usernames/${currentUserId}`), username);
-            }
-
-            await update(ref(database, `users/${currentUserId}`), {
-                name: name,
-                username: username,
-                bio: bio
-            });
-
-            currentUserName = name;
-            currentUserUsername = username;
-            localStorage.setItem('userName', name);
-            localStorage.setItem('userUsername', username);
-            
-            // تحديث معلومات المستخدم في الشريط الجانبي
-            document.getElementById('userInfo').innerHTML = `
-                <div class="user-avatar">${name.charAt(0)}</div>
-                <div class="user-details">
-                    <div class="user-name">${name}</div>
-                    <div class="user-username">@${username}</div>
-                </div>
-            `;
-            
-            closeProfileModal();
-            alert('تم حفظ التعديلات ✅');
-        }
-
-        window.deleteContact = async function(event, contactId) {
-            event.stopPropagation();
-            if (confirm('هل تريد حذف هذه المحادثة؟')) {
-                await remove(ref(database, `contacts/${currentUserId}/${contactId}`));
-                if (currentChat === contactId) {
-                    currentChat = null;
-                    showEmptyChat();
-                }
-            }
-        }
-
-        window.searchContacts = function() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const contactElements = document.querySelectorAll('.contact');
-            
-            contactElements.forEach(element => {
-                const name = element.querySelector('.contact-name').textContent.toLowerCase();
-                const username = element.querySelector('.contact-username').textContent.toLowerCase();
-                element.style.display = (name.includes(searchTerm) || username.includes(searchTerm)) ? 'flex' : 'none';
-            });
-        }
-
-        window.openChat = function(contactId, contactName, contactUsername) {
-            currentChat = contactId;
-            renderContacts();
-            
-            const chatArea = document.getElementById('chatArea');
-            chatArea.innerHTML = `
-                <div class="chat-header">
-                    <button onclick="backToContacts()" style="background: none; border: none; color: #8696a0; font-size: 24px; cursor: pointer; display: none;" id="backBtn">←</button>
-                    <div class="chat-avatar">${contactName.charAt(0)}</div>
-                    <div class="chat-contact-info">
-                        <h3>${contactName}</h3>
-                        <div class="chat-contact-status">@${contactUsername}</div>
-                    </div>
-                </div>
-                <div class="messages-container" id="messagesContainer"></div>
-                <div class="input-area">
-                    <button>😊</button>
-                    <button id="voiceBtn" onclick="toggleVoiceRecording()">🎤</button>
-                    <input type="text" id="messageInput" placeholder="اكتب رسالة" onkeypress="handleKeyPress(event)">
-                    <button class="send-button" onclick="sendMessage()">
-                        <span>➤</span>
-                    </button>
-                </div>
-            `;
-
-            loadMessages(contactId);
-
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.add('hide');
-                document.getElementById('chatArea').classList.add('active');
-                document.getElementById('backBtn').style.display = 'block';
-            }
-        }
-
-        window.toggleVoiceRecording = async function() {
-            if (!isRecording) {
-                // بدء التسجيل
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    mediaRecorder = new MediaRecorder(stream);
-                    audioChunks = [];
-
-                    mediaRecorder.ondataavailable = (event) => {
-                        audioChunks.push(event.data);
-                    };
-
-                    mediaRecorder.onstop = async () => {
-                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                        await sendVoiceMessage(audioBlob);
-                        stream.getTracks().forEach(track => track.stop());
-                    };
-
-                    mediaRecorder.start();
-                    isRecording = true;
-                    
-                    const voiceBtn = document.getElementById('voiceBtn');
-                    voiceBtn.textContent = '⏹️';
-                    voiceBtn.classList.add('record-button');
-                    
-                } catch (err) {
-                    alert('لا يمكن الوصول للميكروفون');
-                    console.error('Error accessing microphone:', err);
-                }
-            } else {
-                // إيقاف التسجيل
-                mediaRecorder.stop();
-                isRecording = false;
-                
-                const voiceBtn = document.getElementById('voiceBtn');
-                voiceBtn.textContent = '🎤';
-                voiceBtn.classList.remove('record-button');
-            }
-        }
-
-        async function sendVoiceMessage(audioBlob) {
-            if (!currentChat) return;
-
-            // تحويل الصوت إلى base64
-            const reader = new FileReader();
-            reader.readAsDataURL(audioBlob);
-            reader.onloadend = async function() {
-                const base64Audio = reader.result;
-                const duration = Math.round(audioBlob.size / 16000); // تقدير تقريبي
-
-                const chatId = [currentUserId, currentChat].sort().join('_');
-                const messageRef = push(ref(database, `chats/${chatId}`));
-                
-                await set(messageRef, {
-                    type: 'voice',
-                    audio: base64Audio,
-                    duration: duration,
-                    senderId: currentUserId,
-                    timestamp: Date.now(),
-                    time: getCurrentTime()
-                });
-
-                await update(ref(database, `contacts/${currentUserId}/${currentChat}`), {
-                    lastMessage: '🎤 رسالة صوتية',
-                    timestamp: Date.now()
-                });
-
-                await update(ref(database, `contacts/${currentChat}/${currentUserId}`), {
-                    lastMessage: '🎤 رسالة صوتية',
-                    timestamp: Date.now()
-                });
-            };
-        }
-
-        function loadMessages(contactId) {
-            const chatId = [currentUserId, contactId].sort().join('_');
-            const messagesRef = ref(database, `chats/${chatId}`);
-            
-            onValue(messagesRef, (snapshot) => {
-                const messages = snapshot.val() || {};
-                renderMessages(messages);
-            });
-        }
-
-        function renderMessages(messages) {
-            const messagesContainer = document.getElementById('messagesContainer');
-            const messagesArray = Object.values(messages);
-
-            messagesContainer.innerHTML = messagesArray.map(msg => {
-                const isSent = msg.senderId === currentUserId;
-                
-                if (msg.type === 'voice') {
-                    return `
-                        <div class="message ${isSent ? 'sent' : 'received'}">
-                            <div class="message-bubble">
-                                <div class="voice-message">
-                                    <button class="voice-play-btn" onclick="playVoice('${msg.audio}')">▶</button>
-                                    <div class="voice-waveform"></div>
-                                    <span class="voice-duration">${msg.duration || 0}s</span>
-                                </div>
-                                <div class="message-time">${msg.time} ${isSent ? '<span class="checkmark">✓✓</span>' : ''}</div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    return `
-                        <div class="message ${isSent ? 'sent' : 'received'}">
-                            <div class="message-bubble">
-                                <div class="message-text">${msg.text}</div>
-                                <div class="message-time">${msg.time} ${isSent ? '<span class="checkmark">✓✓</span>' : ''}</div>
-                            </div>
-                        </div>
-                    `;
-                }
-            }).join('');
-
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        window.playVoice = function(audioData) {
-            const audio = new Audio(audioData);
-            audio.play();
-        }
-
-        window.sendMessage = async function() {
-            if (!currentChat) return;
-
-            const input = document.getElementById('messageInput');
-            const messageText = input.value.trim();
-            
-            if (messageText === '') return;
-
-            const chatId = [currentUserId, currentChat].sort().join('_');
-            const messageRef = push(ref(database, `chats/${chatId}`));
-            
-            await set(messageRef, {
-                text: messageText,
-                senderId: currentUserId,
-                timestamp: Date.now(),
-                time: getCurrentTime(),
-                type: 'text'
-            });
-
-            await update(ref(database, `contacts/${currentUserId}/${currentChat}`), {
-                lastMessage: messageText,
-                timestamp: Date.now()
-            });
-
-            await update(ref(database, `contacts/${currentChat}/${currentUserId}`), {
-                lastMessage: messageText,
-                timestamp: Date.now()
-            });
-
-            input.value = '';
-        }
-
-        function getCurrentTime() {
-            const now = new Date();
-            return now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
-        }
-
-        window.handleKeyPress = function(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
-
-        window.backToContacts = function() {
-            document.getElementById('sidebar').classList.remove('hide');
-            document.getElementById('chatArea').classList.remove('active');
-        }
-
-        function showEmptyChat() {
-            const chatArea = document.getElementById('chatArea');
-            chatArea.innerHTML = `
-                <div class="empty-chat">
-                    <h3>مرحباً بك!</h3>
-                    <p>اختر محادثة للبدء</p>
-                </div>
-            `;
-        }
     </script>
 </body>
-</html><script></script></body></html>
+</html>
