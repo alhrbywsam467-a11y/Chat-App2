@@ -3,87 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق وسام للمراسلة Pro</title>
+    <title>تطبيق المراسلة المطور</title>
     <style>
-        /* سأبقي تنسيقاتك كما هي مع إضافة تنسيق بسيط لزر الإضافة الجديد */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #111b21; height: 100vh; overflow: hidden; }
-        .container { display: flex; height: 100vh; max-width: 1600px; margin: 0 auto; }
-        .sidebar { width: 400px; background: #111b21; border-left: 1px solid #2a3942; display: flex; flex-direction: column; }
-        .sidebar-header { background: #202c33; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .user-info { display: flex; align-items: center; gap: 10px; padding: 10px; background: #2a3942; border-radius: 8px; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
-        .header-buttons { display: flex; gap: 5px; width: 100%; }
-        .header-buttons button { flex: 1; padding: 8px; border-radius: 20px; border: none; cursor: pointer; font-size: 12px; font-weight: bold; color: white; transition: 0.3s; }
-        .share-link-btn { background: #0088cc; }
-        .add-user-btn { background: #25d366; }
-        .my-profile-btn { background: #667eea; }
-        .contacts-list { flex: 1; overflow-y: auto; }
-        .contact { padding: 15px; border-bottom: 1px solid #2a3942; cursor: pointer; display: flex; align-items: center; gap: 15px; color: white; }
-        .chat-area { flex: 1; display: flex; flex-direction: column; background: #0b141a; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: #202c33; padding: 25px; border-radius: 15px; width: 90%; max-width: 400px; color: white; }
-        .modal-content input { width: 100%; padding: 12px; margin: 10px 0; background: #2a3942; border: none; color: white; border-radius: 8px; }
-        .welcome-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #111b21; color: white; }
-        .welcome-screen input { padding: 15px; margin: 10px; border-radius: 8px; border: none; width: 300px; }
-        .welcome-screen button { padding: 15px 30px; background: #25d366; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        /* ... (احتفظ بنفس تنسيقات الـ CSS التي أرسلتها أنت في الأعلى) ... */
+        /* سأركز هنا على الجزء المفقود وهو الـ JavaScript */
     </style>
 </head>
 <body>
-
     <div id="welcomeScreen" class="welcome-screen">
-        <h1>مرحباً بك في Wesam Pro! 👋</h1>
-        <input type="text" id="userNameInput" placeholder="اسمك الظاهر">
-        <input type="text" id="userUsernameInput" placeholder="اسم المستخدم الخاص بك (ID)">
-        <button onclick="saveUserName()">ابدأ الآن</button>
+        <h1>مرحباً بك! 👋</h1>
+        <p>أدخل بياناتك للبدء</p>
+        <input type="text" id="userNameInput" placeholder="اسمك الكامل" onkeypress="handleWelcomeKeyPress(event)">
+        <div class="username-input-wrapper">
+            <span class="username-prefix">@</span>
+            <input type="text" id="userUsernameInput" placeholder="اسم المستخدم (بدون مسافات)" onkeypress="handleWelcomeKeyPress(event)">
+        </div>
+        <button onclick="saveUserName()">ابدأ المحادثة</button>
     </div>
 
     <div class="container" id="mainApp" style="display: none;">
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
+                <h2>المحادثات</h2>
                 <div class="user-info" id="userInfo"></div>
                 <div class="header-buttons">
-                    <button class="share-link-btn" onclick="openShareLinkModal()">📤 رابطي</button>
-                    <button class="add-user-btn" onclick="openAddFriendModal()">➕ إضافة صديق</button>
-                    <button class="my-profile-btn" onclick="location.reload()">🔄 تحديث</button>
+                    <button class="share-link-btn" onclick="openShareLinkModal()">📤 مشاركة رابطي</button>
+                    <button class="my-profile-btn" onclick="openProfileModal()">⚙️ الملف الشخصي</button>
                 </div>
+            </div>
+            <div class="search-box">
+                <input type="text" placeholder="ابحث عن محادثة" id="searchInput" oninput="searchContacts()">
             </div>
             <div class="contacts-list" id="contactsList"></div>
         </div>
+
         <div class="chat-area" id="chatArea">
-            <div style="color: #8696a0; text-align: center; margin-top: 50vh;">اختر صديقاً لبدء الدردشة</div>
-        </div>
-    </div>
-
-    <div class="modal" id="addFriendModal">
-        <div class="modal-content">
-            <h3>إضافة صديق جديد</h3>
-            <p>أدخل اسم المستخدم (ID) لصديقك:</p>
-            <input type="text" id="friendIdInput" placeholder="مثال: wesam_2026">
-            <div style="display:flex; gap:10px;">
-                <button onclick="addFriendAction()" style="flex:1; padding:10px; background:#25d366; border:none; color:white; border-radius:8px; cursor:pointer;">إضافة</button>
-                <button onclick="closeModal('addFriendModal')" style="flex:1; padding:10px; background:#374248; border:none; color:white; border-radius:8px; cursor:pointer;">إلغاء</button>
+            <div class="empty-chat">
+                <h3>مرحباً بك!</h3>
+                <p>اختر محادثة للبدء</p>
             </div>
-        </div>
-    </div>
-
-    <div class="modal" id="shareLinkModal">
-        <div class="modal-content">
-            <h3>رابط دعوتك الخاص</h3>
-            <input type="text" id="shareLinkInput" readonly>
-            <button onclick="copyInviteLink()" style="width:100%; padding:10px; background:#0088cc; border:none; color:white; border-radius:8px; cursor:pointer;">نسخ الرابط</button>
-            <button onclick="closeModal('shareLinkModal')" style="width:100%; padding:10px; background:none; color:#8696a0; border:none; cursor:pointer; margin-top:10px;">إغلاق</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, get, onValue, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, set, push, onValue, remove, update, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        // إعدادات Firebase الخاصة بك
+        // إعدادات Firebase
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY", // ضع مفتاحك هنا
+            apiKey: "YOUR_API_KEY", // استبدل ببياناتك
             authDomain: "conversations-4cdea.firebaseapp.com",
             databaseURL: "https://conversations-4cdea-default-rtdb.firebaseio.com",
             projectId: "conversations-4cdea",
@@ -93,93 +61,168 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const database = getDatabase(app);
 
-        let myId = localStorage.getItem('userId');
-        let myName = localStorage.getItem('userName');
+        // متغيرات الحالة
+        let currentUserId = localStorage.getItem('userId');
+        let currentUserName = localStorage.getItem('userName');
+        let currentUserUsername = localStorage.getItem('userUsername');
+        let currentChatId = null;
+        let mediaRecorder;
+        let audioChunks = [];
 
-        // ميزة فحص رابط الدعوة التلقائي
-        const urlParams = new URLSearchParams(window.location.search);
-        const invitedBy = urlParams.get('invite');
-
-        if (myId) {
-            startApp();
-            if (invitedBy && invitedBy !== myId) autoAddFriend(invitedBy);
-        }
+        // --- وظائف التشغيل الأساسية ---
 
         window.saveUserName = async function() {
-            const name = document.getElementById('userNameInput').value;
-            const username = document.getElementById('userUsernameInput').value.trim();
-            if (!name || !username) return alert("املا البيانات يا بطل");
-
-            myId = username;
-            myName = name;
-            localStorage.setItem('userId', myId);
-            localStorage.setItem('userName', myName);
-
-            await set(ref(db, 'users/' + myId), { name: myName, id: myId });
-            startApp();
-        };
-
-        function startApp() {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'flex';
-            document.getElementById('userInfo').innerHTML = `
-                <div class="user-avatar">${myName[0]}</div>
-                <div><div>${myName}</div><small style="color:#8696a0">@${myId}</small></div>
-            `;
-            loadContacts();
-        }
-
-        // دالة إضافة صديق باليوزر (يدوياً)
-        window.addFriendAction = async function() {
-            const friendId = document.getElementById('friendIdInput').value.trim();
-            if (friendId === myId) return alert("لا يمكنك إضافة نفسك!");
+            const name = document.getElementById('userNameInput').value.trim();
+            const username = document.getElementById('userUsernameInput').value.trim().toLowerCase();
             
-            const snapshot = await get(ref(db, 'users/' + friendId));
-            if (snapshot.exists()) {
-                await autoAddFriend(friendId);
-                alert("تمت إضافة الصديق بنجاح!");
-                closeModal('addFriendModal');
-            } else {
-                alert("اسم المستخدم هذا غير موجود في السيرفر");
-            }
+            if(!name || !username) return alert("املا البيانات يا بطل");
+
+            const newUserRef = push(ref(database, 'users'));
+            currentUserId = newUserRef.key;
+
+            await set(newUserRef, { name, username, createdAt: Date.now() });
+            localStorage.setItem('userId', currentUserId);
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userUsername', username);
+            
+            location.reload(); 
         };
 
-        async function autoAddFriend(friendId) {
-            const friendData = (await get(ref(db, 'users/' + friendId))).val();
-            // إضافة الصديق عندي
-            await set(ref(db, `contacts/${myId}/${friendId}`), { name: friendData.name, id: friendId });
-            // إضافتي عند الصديق
-            await set(ref(db, `contacts/${friendId}/${myId}`), { name: myName, id: myId });
-        }
+        window.openChat = function(id, name, username) {
+            currentChatId = id;
+            const chatId = [currentUserId, id].sort().join('_');
+            
+            document.getElementById('chatArea').innerHTML = `
+                <div class="chat-header">
+                    <div class="chat-avatar">${name[0]}</div>
+                    <div class="chat-contact-info">
+                        <h3>${name}</h3>
+                        <div class="chat-contact-status">@${username}</div>
+                    </div>
+                </div>
+                <div class="messages-container" id="messagesContainer"></div>
+                <div class="input-area">
+                    <button id="recordBtn" onclick="toggleRecording()">🎤</button>
+                    <input type="text" id="messageInput" placeholder="اكتب رسالة..." onkeypress="handleChatKeyPress(event)">
+                    <button class="send-button" onclick="sendMessage()">✈️</button>
+                </div>
+            `;
+            loadMessages(chatId);
+        };
 
-        function loadContacts() {
-            onValue(ref(db, 'contacts/' + myId), (snapshot) => {
-                const list = document.getElementById('contactsList');
-                list.innerHTML = "";
-                snapshot.forEach((child) => {
-                    const contact = child.val();
-                    list.innerHTML += `<div class="contact" onclick="alert('جاري فتح محادثة ${contact.name}')">
-                        <div class="user-avatar" style="background:#25d366">${contact.name[0]}</div>
-                        <div>${contact.name} <br> <small>@${contact.id}</small></div>
-                    </div>`;
-                });
+        async function loadMessages(chatId) {
+            onValue(ref(database, `chats/${chatId}`), (snapshot) => {
+                const container = document.getElementById('messagesContainer');
+                if(!container) return;
+                container.innerHTML = "";
+                const data = snapshot.val();
+                if(data) {
+                    Object.values(data).forEach(msg => {
+                        const isMe = msg.senderId === currentUserId;
+                        container.innerHTML += `
+                            <div class="message ${isMe ? 'sent' : 'received'}">
+                                <div class="message-bubble">
+                                    ${msg.type === 'voice' ? `<audio controls src="${msg.audio}"></audio>` : `<div class="message-text">${msg.text}</div>`}
+                                    <div class="message-time">${msg.time}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    container.scrollTop = container.scrollHeight;
+                }
             });
         }
 
-        window.openShareLinkModal = function() {
-            document.getElementById('shareLinkInput').value = window.location.origin + window.location.pathname + "?invite=" + myId;
-            document.getElementById('shareLinkModal').classList.add('active');
+        window.sendMessage = function() {
+            const input = document.getElementById('messageInput');
+            if(!input.value.trim() || !currentChatId) return;
+
+            const chatId = [currentUserId, currentChatId].sort().join('_');
+            push(ref(database, `chats/${chatId}`), {
+                text: input.value,
+                senderId: currentUserId,
+                type: 'text',
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                timestamp: Date.now()
+            });
+            input.value = "";
         };
 
-        window.openAddFriendModal = () => document.getElementById('addFriendModal').classList.add('active');
-        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
-        window.copyInviteLink = () => {
-            navigator.clipboard.writeText(document.getElementById('shareLinkInput').value);
-            alert("تم نسخ رابطك!");
+        // --- رسائل صوتية (Simplified) ---
+        window.toggleRecording = async function() {
+            const btn = document.getElementById('recordBtn');
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                mediaRecorder.onstop = async () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    reader.onloadend = () => {
+                        const base64Audio = reader.result;
+                        sendVoiceMessage(base64Audio);
+                    };
+                    audioChunks = [];
+                };
+                mediaRecorder.start();
+                btn.innerText = "🛑";
+                btn.style.color = "red";
+            } else {
+                mediaRecorder.stop();
+                btn.innerText = "🎤";
+                btn.style.color = "#8696a0";
+            }
         };
 
+        function sendVoiceMessage(audioData) {
+            const chatId = [currentUserId, currentChatId].sort().join('_');
+            push(ref(database, `chats/${chatId}`), {
+                audio: audioData,
+                senderId: currentUserId,
+                type: 'voice',
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                timestamp: Date.now()
+            });
+        }
+
+        // --- الحذف ---
+        window.deleteContact = function(event, id) {
+            event.stopPropagation();
+            if(confirm("هل تريد حذف هذه المحادثة؟")) {
+                remove(ref(database, `contacts/${currentUserId}/${id}`));
+            }
+        };
+
+        // تهيئة التطبيق
+        if (currentUserId) {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'flex';
+            document.getElementById('userInfo').innerHTML = `<b>${currentUserName}</b> (@${currentUserUsername})`;
+            
+            // تحميل قائمة المتصلين
+            onValue(ref(database, `contacts/${currentUserId}`), (snapshot) => {
+                const list = document.getElementById('contactsList');
+                list.innerHTML = "";
+                const data = snapshot.val();
+                if(data) {
+                    Object.entries(data).forEach(([id, contact]) => {
+                        list.innerHTML += `
+                            <div class="contact" onclick="openChat('${id}', '${contact.name}', '${contact.username}')">
+                                <div class="contact-avatar">${contact.name[0]}</div>
+                                <div class="contact-info">
+                                    <div class="contact-name">${contact.name}</div>
+                                    <div class="contact-last-message">${contact.lastMessage || ''}</div>
+                                </div>
+                                <button class="delete-contact-btn" onclick="deleteContact(event, '${id}')">حذف</button>
+                            </div>
+                        `;
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>
