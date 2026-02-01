@@ -5,53 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تطبيق المراسلة المطور</title>
     <style>
-        /* ... (احتفظ بنفس تنسيقات الـ CSS التي أرسلتها أنت في الأعلى) ... */
-        /* سأركز هنا على الجزء المفقود وهو الـ JavaScript */
+        /* التنسيقات الأساسية */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #111b21; height: 100vh; overflow: hidden; }
+        .container { display: flex; height: 100vh; max-width: 1600px; margin: 0 auto; }
+        
+        /* القائمة الجانبية */
+        .sidebar { width: 400px; background: #111b21; border-left: 1px solid #2a3942; display: flex; flex-direction: column; }
+        .sidebar-header { background: #202c33; padding: 15px; color: white; }
+        .contacts-list { flex: 1; overflow-y: auto; }
+        .contact { padding: 15px; border-bottom: 1px solid #2a3942; cursor: pointer; display: flex; align-items: center; gap: 15px; color: white; }
+        .contact:hover { background: #202c33; }
+        .contact-avatar { width: 50px; height: 50px; border-radius: 50%; background: #25d366; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* منطقة المحادثة */
+        .chat-area { flex: 1; display: flex; flex-direction: column; background: #0b141a; }
+        .chat-header { background: #202c33; padding: 15px; display: flex; align-items: center; gap: 15px; color: white; border-bottom: 1px solid #2a3942; }
+        .messages-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; }
+        
+        /* فقاعات الرسائل */
+        .message { margin-bottom: 10px; display: flex; }
+        .message.sent { justify-content: flex-end; }
+        .message.received { justify-content: flex-start; }
+        .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 8px; color: white; position: relative; }
+        .sent .message-bubble { background: #005c4b; }
+        .received .message-bubble { background: #202c33; }
+        .message-time { font-size: 10px; color: #8696a0; margin-top: 5px; text-align: left; }
+
+        /* منطقة الإدخال */
+        .input-area { background: #202c33; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .input-area input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: #2a3942; color: white; }
+        .send-button { background: #25d366; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; color: white; }
+
+        /* الشاشة الترحيبية */
+        .welcome-screen { position: fixed; inset: 0; background: #111b21; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; color: white; }
+        .welcome-screen input { padding: 10px; margin: 10px; width: 250px; border-radius: 5px; border: none; }
+        .welcome-screen button { padding: 10px 30px; background: #25d366; border: none; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; }
+        
+        .delete-btn { background: #ff4444; border: none; color: white; padding: 5px; cursor: pointer; border-radius: 3px; font-size: 10px; margin-right: auto; }
     </style>
 </head>
 <body>
-    <div id="welcomeScreen" class="welcome-screen">
-        <h1>مرحباً بك! 👋</h1>
-        <p>أدخل بياناتك للبدء</p>
-        <input type="text" id="userNameInput" placeholder="اسمك الكامل" onkeypress="handleWelcomeKeyPress(event)">
-        <div class="username-input-wrapper">
-            <span class="username-prefix">@</span>
-            <input type="text" id="userUsernameInput" placeholder="اسم المستخدم (بدون مسافات)" onkeypress="handleWelcomeKeyPress(event)">
-        </div>
-        <button onclick="saveUserName()">ابدأ المحادثة</button>
+
+    <div id="welcomeScreen" class="welcome-screen" style="display: none;">
+        <h1>مرحباً بك</h1>
+        <input type="text" id="userNameInput" placeholder="اسمك الكامل">
+        <input type="text" id="userUsernameInput" placeholder="اسم المستخدم (@)">
+        <button onclick="saveUserName()">دخول</button>
     </div>
 
-    <div class="container" id="mainApp" style="display: none;">
-        <div class="sidebar" id="sidebar">
+    <div class="container">
+        <div class="sidebar">
             <div class="sidebar-header">
-                <h2>المحادثات</h2>
-                <div class="user-info" id="userInfo"></div>
-                <div class="header-buttons">
-                    <button class="share-link-btn" onclick="openShareLinkModal()">📤 مشاركة رابطي</button>
-                    <button class="my-profile-btn" onclick="openProfileModal()">⚙️ الملف الشخصي</button>
+                <h3 id="myDisplayName">المحادثات</h3>
+                <p id="myDisplayUsername" style="font-size: 12px; color: #8696a0;"></p>
+            </div>
+            <div class="contacts-list" id="contactsList">
                 </div>
-            </div>
-            <div class="search-box">
-                <input type="text" placeholder="ابحث عن محادثة" id="searchInput" oninput="searchContacts()">
-            </div>
-            <div class="contacts-list" id="contactsList"></div>
         </div>
 
         <div class="chat-area" id="chatArea">
-            <div class="empty-chat">
-                <h3>مرحباً بك!</h3>
-                <p>اختر محادثة للبدء</p>
-            </div>
+            <div style="color: #8696a0; text-align: center; margin-top: 200px;">اختر شخصاً لبدء المحادثة</div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, push, onValue, remove, update, get } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getDatabase, ref, set, push, onValue, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
-        // إعدادات Firebase
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY", // استبدل ببياناتك
+            apiKey: "YOUR_API_KEY",
             authDomain: "conversations-4cdea.firebaseapp.com",
             databaseURL: "https://conversations-4cdea-default-rtdb.firebaseio.com",
             projectId: "conversations-4cdea",
@@ -63,166 +86,115 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // متغيرات الحالة
         let currentUserId = localStorage.getItem('userId');
-        let currentUserName = localStorage.getItem('userName');
-        let currentUserUsername = localStorage.getItem('userUsername');
         let currentChatId = null;
-        let mediaRecorder;
-        let audioChunks = [];
 
-        // --- وظائف التشغيل الأساسية ---
+        // التحقق من تسجيل الدخول
+        if (!currentUserId) {
+            document.getElementById('welcomeScreen').style.display = 'flex';
+        } else {
+            loadAppData();
+        }
 
-        window.saveUserName = async function() {
-            const name = document.getElementById('userNameInput').value.trim();
-            const username = document.getElementById('userUsernameInput').value.trim().toLowerCase();
-            
-            if(!name || !username) return alert("املا البيانات يا بطل");
+        window.saveUserName = function() {
+            const name = document.getElementById('userNameInput').value;
+            const user = document.getElementById('userUsernameInput').value;
+            if(!name || !user) return alert("املا البيانات");
 
-            const newUserRef = push(ref(database, 'users'));
-            currentUserId = newUserRef.key;
-
-            await set(newUserRef, { name, username, createdAt: Date.now() });
-            localStorage.setItem('userId', currentUserId);
+            const id = "user_" + Date.now();
+            localStorage.setItem('userId', id);
             localStorage.setItem('userName', name);
-            localStorage.setItem('userUsername', username);
+            localStorage.setItem('userUsername', user);
             
-            location.reload(); 
+            set(ref(database, 'users/' + id), { name, username: user }).then(() => {
+                location.reload();
+            });
         };
 
-        window.openChat = function(id, name, username) {
-            currentChatId = id;
-            const chatId = [currentUserId, id].sort().join('_');
-            
-            document.getElementById('chatArea').innerHTML = `
-                <div class="chat-header">
-                    <div class="chat-avatar">${name[0]}</div>
-                    <div class="chat-contact-info">
-                        <h3>${name}</h3>
-                        <div class="chat-contact-status">@${username}</div>
-                    </div>
-                </div>
-                <div class="messages-container" id="messagesContainer"></div>
-                <div class="input-area">
-                    <button id="recordBtn" onclick="toggleRecording()">🎤</button>
-                    <input type="text" id="messageInput" placeholder="اكتب رسالة..." onkeypress="handleChatKeyPress(event)">
-                    <button class="send-button" onclick="sendMessage()">✈️</button>
-                </div>
-            `;
-            loadMessages(chatId);
-        };
+        function loadAppData() {
+            document.getElementById('myDisplayName').innerText = localStorage.getItem('userName');
+            document.getElementById('myDisplayUsername').innerText = "@" + localStorage.getItem('userUsername');
 
-        async function loadMessages(chatId) {
-            onValue(ref(database, `chats/${chatId}`), (snapshot) => {
-                const container = document.getElementById('messagesContainer');
-                if(!container) return;
-                container.innerHTML = "";
-                const data = snapshot.val();
-                if(data) {
-                    Object.values(data).forEach(msg => {
-                        const isMe = msg.senderId === currentUserId;
-                        container.innerHTML += `
-                            <div class="message ${isMe ? 'sent' : 'received'}">
-                                <div class="message-bubble">
-                                    ${msg.type === 'voice' ? `<audio controls src="${msg.audio}"></audio>` : `<div class="message-text">${msg.text}</div>`}
-                                    <div class="message-time">${msg.time}</div>
+            // جلب قائمة جهات الاتصال (المحادثات)
+            onValue(ref(database, `contacts/${currentUserId}`), (snapshot) => {
+                const list = document.getElementById('contactsList');
+                list.innerHTML = "";
+                if (snapshot.exists()) {
+                    snapshot.forEach((child) => {
+                        const contact = child.val();
+                        list.innerHTML += `
+                            <div class="contact" onclick="openChat('${child.key}', '${contact.name}', '${contact.username}')">
+                                <div class="contact-avatar">${contact.name[0]}</div>
+                                <div style="flex:1">
+                                    <div>${contact.name}</div>
+                                    <div style="font-size:12px; color:#8696a0">@${contact.username}</div>
                                 </div>
+                                <button class="delete-btn" onclick="event.stopPropagation(); deleteContact('${child.key}')">حذف</button>
                             </div>
                         `;
                     });
-                    container.scrollTop = container.scrollHeight;
                 }
             });
         }
 
+        window.openChat = function(id, name, username) {
+            currentChatId = id;
+            const chatArea = document.getElementById('chatArea');
+            
+            // رسم الواجهة فوراً دون انتظار
+            chatArea.innerHTML = `
+                <div class="chat-header">
+                    <div class="contact-avatar">${name[0]}</div>
+                    <div>${name}</div>
+                </div>
+                <div class="messages-container" id="messagesContainer"></div>
+                <div class="input-area">
+                    <input type="text" id="msgInput" placeholder="اكتب هنا..." onkeypress="if(event.key==='Enter') sendMessage()">
+                    <button class="send-button" onclick="sendMessage()">إرسال</button>
+                </div>
+            `;
+
+            const chatId = [currentUserId, id].sort().join('_');
+            onValue(ref(database, `chats/${chatId}`), (snapshot) => {
+                const container = document.getElementById('messagesContainer');
+                if(!container) return;
+                container.innerHTML = "";
+                snapshot.forEach((child) => {
+                    const msg = child.val();
+                    const isMe = msg.senderId === currentUserId;
+                    container.innerHTML += `
+                        <div class="message ${isMe ? 'sent' : 'received'}">
+                            <div class="message-bubble">
+                                <div>${msg.text}</div>
+                                <div class="message-time">${msg.time}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.scrollTop = container.scrollHeight;
+            });
+        };
+
         window.sendMessage = function() {
-            const input = document.getElementById('messageInput');
-            if(!input.value.trim() || !currentChatId) return;
+            const input = document.getElementById('msgInput');
+            if(!input.value || !currentChatId) return;
 
             const chatId = [currentUserId, currentChatId].sort().join('_');
+            const now = new Date();
             push(ref(database, `chats/${chatId}`), {
                 text: input.value,
                 senderId: currentUserId,
-                type: 'text',
-                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                time: now.getHours() + ":" + now.getMinutes(),
                 timestamp: Date.now()
             });
             input.value = "";
         };
 
-        // --- رسائل صوتية (Simplified) ---
-        window.toggleRecording = async function() {
-            const btn = document.getElementById('recordBtn');
-            if (!mediaRecorder || mediaRecorder.state === "inactive") {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-                mediaRecorder.onstop = async () => {
-                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onloadend = () => {
-                        const base64Audio = reader.result;
-                        sendVoiceMessage(base64Audio);
-                    };
-                    audioChunks = [];
-                };
-                mediaRecorder.start();
-                btn.innerText = "🛑";
-                btn.style.color = "red";
-            } else {
-                mediaRecorder.stop();
-                btn.innerText = "🎤";
-                btn.style.color = "#8696a0";
-            }
-        };
-
-        function sendVoiceMessage(audioData) {
-            const chatId = [currentUserId, currentChatId].sort().join('_');
-            push(ref(database, `chats/${chatId}`), {
-                audio: audioData,
-                senderId: currentUserId,
-                type: 'voice',
-                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-                timestamp: Date.now()
-            });
-        }
-
-        // --- الحذف ---
-        window.deleteContact = function(event, id) {
-            event.stopPropagation();
-            if(confirm("هل تريد حذف هذه المحادثة؟")) {
+        window.deleteContact = function(id) {
+            if(confirm("حذف المحادثة؟")) {
                 remove(ref(database, `contacts/${currentUserId}/${id}`));
             }
         };
-
-        // تهيئة التطبيق
-        if (currentUserId) {
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'flex';
-            document.getElementById('userInfo').innerHTML = `<b>${currentUserName}</b> (@${currentUserUsername})`;
-            
-            // تحميل قائمة المتصلين
-            onValue(ref(database, `contacts/${currentUserId}`), (snapshot) => {
-                const list = document.getElementById('contactsList');
-                list.innerHTML = "";
-                const data = snapshot.val();
-                if(data) {
-                    Object.entries(data).forEach(([id, contact]) => {
-                        list.innerHTML += `
-                            <div class="contact" onclick="openChat('${id}', '${contact.name}', '${contact.username}')">
-                                <div class="contact-avatar">${contact.name[0]}</div>
-                                <div class="contact-info">
-                                    <div class="contact-name">${contact.name}</div>
-                                    <div class="contact-last-message">${contact.lastMessage || ''}</div>
-                                </div>
-                                <button class="delete-contact-btn" onclick="deleteContact(event, '${id}')">حذف</button>
-                            </div>
-                        `;
-                    });
-                }
-            });
-        }
     </script>
 </body>
 </html>
